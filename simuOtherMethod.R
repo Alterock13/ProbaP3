@@ -2,15 +2,16 @@
   
   ## Simulation des services : 
   
-  simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
+  simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
     ## N : capacité maximale de stockage (en service + dans la file d'attente)
     ## p1,p2,p3 : proportion de priorités (p1+p2+p3 = 1)
     ## lambda : intensité, lambda>0
-    ## 1/mu = temps de traitement, mu>0
+    ## 1/mu : temps de traitement, mu>0
+    ## nbServeurs : nombre de serveurs
     
-    ## Dur?e de l'exp?rience
+    ## Duree de l'experience
     
-    totalTime   = duration   # duration of simulation
+    totalTime = duration   # duration of simulation
     expTime = 0 # simulation time
     
     ## Pour les arrivees
@@ -19,11 +20,11 @@
     k3 = 0 # nombre de requetes dans la queue de P3
     k = 0 # nombre de requetes totales 
     
-    compteurk1 = 0 # nombre des requetes 1 trait?es successivement
-    compteurk2 = 0 # nombre des requetes 2 trait?es successivement
-    compteurk3 = 0 # 
+    compteurk1 = 0 # nombre des requetes 1 traitees successivement
+    compteurk2 = 0 # nombre des requetes 2 traites successivement
+    compteurk3 = 0 # nombre des requetes 1 traitees successivement
     
-    tempsArrivee = 0 # Temps pour la r?ception suivante
+    tempsArrivee = 0 # Temps pour la reception suivante
     tempsService = 0 # Temps pour le service suivant
     
     paquetsRecus = 0
@@ -73,25 +74,26 @@
         {
           prochainService = rexp(1,mu)
           tempsService = tempsService + prochainService
-        if (k1 > 0){
-          k1 = k1 - 1
-          paquetsTraites = paquetsTraites + 1
-          compteurk1 = compteurk1 +1
-        }
-        else if (k2 > 0){
-          k2 = k2 - 1
-          paquetsTraites = paquetsTraites + 1
-          compteurk2 = compteurk2+1
-        }
-        else if (k3 > 0){
-          k3 = k3 - 1
-          paquetsTraites = paquetsTraites + 1
-          compteurk3 = compteurk3 +1
-        }
-          
-        k = k1+k2+k3
-        expTime = tempsService
-        
+          for (i in 0:nbServeurs) {
+            if (k1 > 0){
+              k1 = k1 - 1
+              paquetsTraites = paquetsTraites + 1
+              compteurk1 = compteurk1 +1
+            }
+            else if (k2 > 0){
+              k2 = k2 - 1
+              paquetsTraites = paquetsTraites + 1
+              compteurk2 = compteurk2+1
+            }
+            else if (k3 > 0){
+              k3 = k3 - 1
+              paquetsTraites = paquetsTraites + 1
+              compteurk3 = compteurk3 +1
+            }
+            
+            k = k1+k2+k3
+          }
+          expTime = tempsService
       }
     }
     
@@ -108,5 +110,8 @@
   
   }
   
-  simulationServeur2(1,1,20,0.5,0.3,0.2,10^4)
+  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,1)
+  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,2)
+  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,4)
+  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,8)
   
