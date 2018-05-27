@@ -54,9 +54,9 @@
             compteurPerduesk1 = compteurPerduesk1+1
           }
           else{
-            compteurRecuesk1 = compteurRecuesk1 + 1
             k1 = k1 +1  
           }
+          compteurRecuesk1 = compteurRecuesk1 + 1
         }
         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
           prochaineRequete = rexp(1,p2* lambda)
@@ -65,9 +65,10 @@
             compteurPerduesk2 = compteurPerduesk2+1
           }
           else{
-            compteurRecuesk2 = compteurRecuesk2 + 1
+            
             k2 = k2 + 1
           }
+          compteurRecuesk2 = compteurRecuesk2 + 1
         }
         else{
           prochaineRequete = rexp(1,p3* lambda)
@@ -76,9 +77,10 @@
             compteurPerduesk3 = compteurPerduesk3 + 1
           }
           else{
-            compteurRecuesk3 = compteurRecuesk3 + 1
             k3 = k3 + 1
           }
+          compteurRecuesk3 = compteurRecuesk3 + 1
+          
         }
         tempsArrivee = tempsArrivee + prochaineRequete
         k = k1+k2+k3
@@ -121,6 +123,7 @@
     print(compteurRecuesk1)
     print(compteurRecuesk2)
     print(compteurRecuesk3)
+    print(compteurRecuesk1+compteurRecuesk2+compteurRecuesk3)
     print ("#########")
     print(compteurTraitesk1)
     print(compteurTraitesk2)
