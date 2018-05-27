@@ -8,7 +8,7 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
   ## lambda : intensitÃ©, lambda>0
   ## 1/mu = temps de traitement, mu>0
   
-  ## Durée de l'expérience
+  ## Dur?e de l'exp?rience
   
   totalTime   = duration   # duration of simulation
   expTime = 0 # simulation time
@@ -19,10 +19,10 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
   k3 = 0 # nombre de requetes dans la queue de P3
   k = 0 # nombre de requetes totales 
   
-  k1succ = 0 # nombre des requetes 1 traitées successivement
-  k2succ = 0 # nombre des requetes 2 traitées successivement
+  k1succ = 0 # nombre des requetes 1 trait?es successivement
+  k2succ = 0 # nombre des requetes 2 trait?es successivement
   
-  tempsArrivee = 0 # Temps pour la réception suivante
+  tempsArrivee = 0 # Temps pour la r?ception suivante
   tempsService = 0 # Temps pour le service suivant
   
   paquetsRecus = 0
@@ -31,10 +31,11 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
   
   while(expTime<totalTime){
     if (tempsArrivee< tempsService || k == 0) {
+      paquetsRecus = paquetsRecus + 1
       prochaineRequete = rexp(1,lambda)
       tempsArrivee = tempsArrivee + prochaineRequete
       
-      ## On associe à la requête une priorité
+      ## On associe a la requete une priorite
       randomPriority = sample(1:100,1)
       
       if(randomPriority < p1*100){
@@ -42,7 +43,7 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
           paquetsPerdus = paquetsPerdus + 1
         }
         else{
-          k1 = k1 +1          
+          k1 = k1 +1  
         }
       }
       else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
@@ -50,7 +51,7 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
           paquetsPerdus = paquetsPerdus + 1
         }
         else{
-        k2 = k2 + 1
+          k2 = k2 + 1
         }
       }
       else{
@@ -58,21 +59,17 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
           paquetsPerdus = paquetsPerdus + 1
         }
         else{
-        k3 = k3 + 1
+          k3 = k3 + 1
         }
       }
       k = k1+k2+k3
-      if (k>N){
-        paquetsPerdus = paquetsPerdus + 1
-        k=N
-      }
-      paquetsRecus = paquetsRecus + 1
       expTime = tempsArrivee
-      tempsArrivee = tempsArrivee + rexp(1,lambda)
       
     
     }else
       {
+        prochainService = rexp(1,mu)
+        tempsService = tempsService + prochainService
       if (k1 > 0 && k1succ < 4){
         k1 = k1 - 1
         k1succ = k1succ + 1
@@ -82,15 +79,13 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
         k2 = k2 - 1
         k2succ = k2succ + 1
         k1succ = 0
-        print(k2)
-
       }
       else if (k3 > 0){
         k3 = k3 - 1
       }
+        
       k = k1+k2+k3
-      expTime = expTime + tempsService
-      tempsDepart = expTime + rexp(1,mu)
+      expTime = tempsService
       paquetsTraites = paquetsTraites + 1
     }
   }
@@ -99,17 +94,9 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
   print(paquetsRecus)
   print(paquetsTraites)
   print(paquetsPerdus)
-  ## simulation de 20 services
-  
-  ## affichage du tableau arrivees
-  #tableauArrivees<-data.frame(Tk,arrivee,priorite,etat)
-  #print(tableauArrivees)
-  
-  ## affichage du tableau services
-  #tableauServices<-data.frame(Si,service)
-  #print(tableauServices)
+  print(k)
   
 }
 
-simulationServeur2(1,1,40,0.3,0.2,0.5,10^2)
+simulationServeur2(2,1,40,0.3,0.2,0.5,10^2)
 
