@@ -22,9 +22,17 @@
     k3 = 0 # nombre de requetes dans la queue de P3
     k = 0 # nombre de requetes totales 
     
-    compteurk1 = 0 # nombre des requetes 1 traitees successivement
-    compteurk2 = 0 # nombre des requetes 2 traites successivement
-    compteurk3 = 0 # nombre des requetes 1 traitees successivement
+    compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
+    compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
+    compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+    
+    compteurRecuesk1 = 0 # nombre des requetes 1 recues
+    compteurRecuesk2 = 0 # nombre des requetes 2 recues
+    compteurRecuesk3 = 0 # nombre des requetes 1 recues
+    
+    compteurPerduesk1 = 0 # nombre des requetes 1 perdues
+    compteurPerduesk2 = 0 # nombre des requetes 2 perdues
+    compteurPerduesk3 = 0 # nombre des requetes 1 perdues
     
     tempsArrivee = 0 # Temps pour la reception suivante
     tempsService = 0 # Temps pour le service suivant
@@ -43,9 +51,10 @@
           prochaineRequete = rexp(1,p1* lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
+            compteurPerduesk1 = compteurPerduesk1+1
           }
           else{
-            
+            compteurRecuesk1 = compteurRecuesk1 + 1
             k1 = k1 +1  
           }
         }
@@ -53,8 +62,10 @@
           prochaineRequete = rexp(1,p2* lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
+            compteurPerduesk2 = compteurPerduesk2+1
           }
           else{
+            compteurRecuesk2 = compteurRecuesk2 + 1
             k2 = k2 + 1
           }
         }
@@ -62,8 +73,10 @@
           prochaineRequete = rexp(1,p3* lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
+            compteurPerduesk3 = compteurPerduesk3 + 1
           }
           else{
+            compteurRecuesk3 = compteurRecuesk3 + 1
             k3 = k3 + 1
           }
         }
@@ -80,17 +93,17 @@
             if (k1 > 0){
               k1 = k1 - 1
               paquetsTraites = paquetsTraites + 1
-              compteurk1 = compteurk1 +1
+              compteurTraitesk1 = compteurTraitesk1 +1
             }
             else if (k2 > 0){
               k2 = k2 - 1
               paquetsTraites = paquetsTraites + 1
-              compteurk2 = compteurk2+1
+              compteurTraitesk2 = compteurTraitesk2+1
             }
             else if (k3 > 0){
               k3 = k3 - 1
               paquetsTraites = paquetsTraites + 1
-              compteurk3 = compteurk3 +1
+              compteurTraitesk3 = compteurTraitesk3 +1
             }
             
             k = k1+k2+k3
@@ -105,9 +118,18 @@
     print(paquetsPerdus)
     print(paquetsTraites+paquetsPerdus+k)
     print ("#########")
-    print(compteurk1)
-    print(compteurk2)
-    print(compteurk3)
+    print(compteurRecuesk1)
+    print(compteurRecuesk2)
+    print(compteurRecuesk3)
+    print ("#########")
+    print(compteurTraitesk1)
+    print(compteurTraitesk2)
+    print(compteurTraitesk3)
+    print ("#########")
+    print(compteurPerduesk1)
+    print(compteurPerduesk2)
+    print(compteurPerduesk3)
+    
     
   
   }
