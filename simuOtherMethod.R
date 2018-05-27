@@ -14,6 +14,8 @@
     totalTime = duration   # duration of simulation
     expTime = 0 # simulation time
     
+    N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
+    
     ## Pour les arrivees
     k1 = 0 # nombre de requetes dans la queue de P1
     k2 = 0 # nombre de requetes dans la queue de P2
