@@ -38,16 +38,28 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
       randomPriority = sample(1:100,1)
       
       if(randomPriority < p1*100){
-        prioriteChoisie = 1
-        k1 = k1 +1
+        if(k==N){
+          paquetsPerdus = paquetsPerdus + 1
+        }
+        else{
+          k1 = k1 +1          
+        }
       }
       else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
-        prioriteChoisie = 2
-        k2 = k2 = 1
+        if(k==N){
+          paquetsPerdus = paquetsPerdus + 1
+        }
+        else{
+        k2 = k2 + 1
+        }
       }
       else{
-        prioriteChoisie = 3
+        if(k==N){
+          paquetsPerdus = paquetsPerdus + 1
+        }
+        else{
         k3 = k3 + 1
+        }
       }
       k = k1+k2+k3
       if (k>N){
@@ -66,14 +78,14 @@ simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration){
         k1succ = k1succ + 1
         k2succ = 0
       }
-      if (k2 > 0 && k2succ < 4){
+      else if (k2 > 0 && k2succ < 4){
         k2 = k2 - 1
         k2succ = k2succ + 1
         k1succ = 0
         print(k2)
 
       }
-      if (k3 > 0){
+      else if (k3 > 0){
         k3 = k3 - 1
       }
       k = k1+k2+k3
