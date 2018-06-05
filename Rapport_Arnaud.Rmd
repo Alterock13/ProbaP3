@@ -23,12 +23,13 @@ Les requêtes sont traitées aux temps $D~1~$, $D~2~$,..,$D~n~$ en suivant égal
 
 Tout d'abord, nous allons effectuer des expériences nous montrant notamment les effets des variations de lambda et mu sur le système. Nous allons étudier pour le moment 3 cas, lambda<mu, lambda=mu et lambda>mu
 Pour ce faire, lançons une simulation avec un lambda allant de 1 à 10 et étudions la perte des paquets. Les autres paramètres pour cette expérience seront :
+
 - mu = 1
 - N = 10
 - p1 = 0.5
 - p2 = 0.3
 - p3 = 0.2
-- durée de l'expérience : 10^4
+- durée de l'expérience = 10^4
 
 ```{r echo=FALSE}
 
