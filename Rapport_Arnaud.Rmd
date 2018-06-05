@@ -1,34 +1,33 @@
 ---
-title: "RapportP3"
+title: "ProbabilitÃ©s AppliquÃ©es - Projet simulation de file d'attente"
 output: html_document
 author: "Arnaud PIERRET"
-date: "26 Mai 2018"
+date: "1 Juin 2018"
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-#Introduction
+##Introduction
 
-Ce projet fut réalisé à l'aide du language R. Le problème présenté est de simuler une file d'attente sur un serveur.
+Ce projet fut rÃ©alisÃ© Ã  l'aide du langage R. Le problÃ¨me prÃ©sentÃ© est de simuler une file d'attente sur un serveur.
 
-# Arrivée et traitement des requêtes
+##ArrivÃ© et traitement des requÃªtes
 
-Les requêtes arrivent aux temps A1,A2,..,An en suivant la une loi exponentielle de paramètre $lambda. Afin de gérer les niveaux de priorités (similaire à de la QoS), les requetes entrantes sont stockées dans une des trois sous-file de priorité avec le choix de la file réalisé grâce à une variable aléatoire suivant une loi????TODO
-La file d'attente a une taille N qui limite le nombre de requêtes dans le système. Si une requête arrive alors que la file est pleine, la requête est rejetée.
+Les requÃªtes arrivent aux temps A1,A2,..,An en suivant la une loi exponentielle de paramÃ¨tre $lambda. Afin de gÃ©rer les niveaux de prioritÃ©s (similaire Ã  ce que ferai un systÃ¨me de QoS), les requÃªtes entrantes sont stockÃ©es dans une des trois sous-file de prioritÃ© avec le choix de la file rÃ©alisÃ© grÃ¢ce Ã  une variable alÃ©atoire suivant une loi uniforme.
+La file d'attente a une taille N qui limite le nombre de requÃªtes dans le systÃ¨me. Si une requÃªte arrive alors que la file est pleine, cette requÃªte est rejetÃ©e.
 
-Les requêtes sont traitées aux temps D1,D2,..,Dn en suivant égaleent une loi exponentielle mais cette fois ci de paramètre $(1/mu). Lorsqu'un tempsde traitement arrive, une requête (située dans une des files de priorité) est retirée de la simulation. La gestion des priorités fut réalisée de manière assez simpliste comparé à la réalité. En effet, dans notre simuation, tant que des paquets tagués P1 sont en attentes ils sont traités, puis les P2, puis les P3. Dans la vraie vie, des système de QoS tels que le Round Robin and Weighted Fair Queuing sont plus utilisés. Pour autant, dans le contexte de notre simulation, le Priority Queuing donne déjà des résultats probants.
+Les requÃªtes sont traitÃ©es aux temps D1,D2,..,Dn en suivant Ã©galement une loi exponentielle mais cette fois ci de paramÃ¨tre $(1/mu). Lorsqu'un temps de traitement arrive, une requÃªte (situÃ©e dans une des files de prioritÃ©) est retirÃ©e de la simulation. La gestion des prioritÃ©s fut rÃ©alisÃ©e de maniÃ¨re assez naÃ¯ve comparÃ© Ã  la rÃ©alitÃ©. En effet, dans notre simulation, tant que des paquets taguÃ©s P1 sont en attentes ils sont traitÃ©s, puis les P2, puis les P3. Dans la vraie vie, des systÃ¨mes de traitement de queue tels que le Round Robin and Weighted Fair Queuing (WFQ) sont plus utilisÃ©s. Pour autant, dans le contexte de notre simulation, le Priority Queuing (PQ) donne dÃ©jÃ  des rÃ©sultats probants. Pour ce projet, j'ai tentÃ© de mettre en place un WFQ en limitant Ã  3 traitements successifs pour chaque prioritÃ©. La diffÃ©rence avec le PQ Ã©tait ici nÃ©gligeable.
 
-# Influence des paramètres lambda et mu
+##Influence des paramÃ¨tres lambda et mu
 
-Tout d'abord, nous allons effectuer des expériences nous montrant notamment les effets des variations de lambda et mu sur le système. Nous allons étudier pour le moment 3 cas, lambda<mu, lambda=mu et lambda>mu
-pour ce faire, lançon une simulation avec un lambda allant de 1 à 10 et étudions la perte des paquets. Les autres paramètres pour cette expérience seront :
-* mu = 1
-* N = 10
-* p1 = 0.5
-* p2 = 0.3
-* p3 = 0.2
-* durée de l'expérience : 10^4
+Tout d'abord, nous allons effectuer des expÃ©riences nous montrant notamment les effets des variations de lambda et mu sur le systÃ¨me. Nous allons Ã©tudier pour le moment 3 cas, lambda<mu, lambda=mu et lambda>mu
+Pour ce faire, lanÃ§ons une simulation avec un lambda allant de 1 Ã  10 et Ã©tudions la perte des paquets. Les autres paramÃ¨tres pour cette expÃ©rience seront :
+- mu = 1
+- N = 10
+- p1 = 0.5
+- p2 = 0.3
+- p3 = 0.2
+- durÃ©e de l'expÃ©rience : 10^4
 
 ```{r echo=FALSE}
 
@@ -52,22 +51,22 @@ ListePaquetsPerdus=c()
      N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
 
      ## Pour les arrivees
-     k1 = 0 # nombre de requetes dans la queue de P1
-     k2 = 0 # nombre de requetes dans la queue de P2
-     k3 = 0 # nombre de requetes dans la queue de P3
-     k = 0 # nombre de requetes totales
+     k1 = 0 # nombre de requÃªtes dans la queue de P1
+     k2 = 0 # nombre de requÃªtes dans la queue de P2
+     k3 = 0 # nombre de requÃªtes dans la queue de P3
+     k = 0 # nombre de requÃªtes totales
 
-     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
-     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
-     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk1 = 0 # nombre des requÃªtes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requÃªtes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requÃªtes 1 traitees successivement
 
-     compteurRecuesk1 = 0 # nombre des requetes 1 recues
-     compteurRecuesk2 = 0 # nombre des requetes 2 recues
-     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+     compteurRecuesk1 = 0 # nombre des requÃªtes 1 recues
+     compteurRecuesk2 = 0 # nombre des requÃªtes 2 recues
+     compteurRecuesk3 = 0 # nombre des requÃªtes 1 recues
 
-     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
-     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
-     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk1 = 0 # nombre des requÃªtes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requÃªtes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requÃªtes 1 perdues
 
      tempsArrivee = 0 # Temps pour la reception suivante
      tempsService = 0 # Temps pour le service suivant
@@ -162,13 +161,14 @@ ListePaquetsPerdus=c()
 
    
 ```
-En dessous du rapport $$lambda/mu$$ le nombre de paquets perdus est négligeable, il tend vers 0. Ce qui est logique puisque si le traitement se fait plsu rapidement que les arrivés et avec une file de 10 éléments, il y a peu de risque de predre des paquets. En revanche, on peut observer qu'au delà d'un ratio $(lambda/mu) supérieur à 4, le nombre de paquêts perdus croît rapidement jusqu'à dépasser 12000 pour un ratio de 10
 
-# Perte de paquets
+En dessous du rapport $\lambda/\mu$ le nombre de paquets perdus est nÃ©gligeable, il tend vers 0. Ce qui est logique puisque si le traitement se fait plus rapidement que les arrivÃ©s et avec une file de 10 Ã©lÃ©ments, il y a peu de risque de perdre des paquets. En revanche, on peut observer qu'au delÃ  d'un ratio $\lambda/\mu$ supÃ©rieur Ã  4, le nombre de paquets perdus croit rapidement jusqu'Ã  dÃ©passer 12000 pertes pour un ratio de 10
 
-Le pourcentage de paquets perdus théorique est donné par cette forumule : $$P(X_t=N)=\frac{1-\rho}{1-\rho^{N+1}}\rho^N$$
+##Perte de paquets
 
-Pour trouver une valeur empirique à cette probabilité nous pouvons tracer le pourcentage de paquets perdus sur le total de paquets arrivés pour différentes valeurs de lambda.
+Le pourcentage de paquets perdus thÃ©orique est donnÃ© par cette formule : $$P(X_t=N)=\frac{1-\rho}{1-\rho^{N+1}}\rho^N$$
+
+Pour trouver une valeur empirique Ã  cette probabilitÃ© nous pouvons tracer le pourcentage de paquets perdus sur le total de paquets arrivÃ©s pour diffÃ©rentes valeurs de $\lambda$.
 
 ```{r echo=FALSE}
 
@@ -192,22 +192,22 @@ ListePaquetsPerdus=c()
      N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
 
      ## Pour les arrivees
-     k1 = 0 # nombre de requetes dans la queue de P1
-     k2 = 0 # nombre de requetes dans la queue de P2
-     k3 = 0 # nombre de requetes dans la queue de P3
-     k = 0 # nombre de requetes totales
+     k1 = 0 # nombre de requÃªtes dans la queue de P1
+     k2 = 0 # nombre de requÃªtes dans la queue de P2
+     k3 = 0 # nombre de requÃªtes dans la queue de P3
+     k = 0 # nombre de requÃªtes totales
 
-     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
-     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
-     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk1 = 0 # nombre des requÃªtes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requÃªtes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requÃªtes 1 traitees successivement
 
-     compteurRecuesk1 = 0 # nombre des requetes 1 recues
-     compteurRecuesk2 = 0 # nombre des requetes 2 recues
-     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+     compteurRecuesk1 = 0 # nombre des requÃªtes 1 recues
+     compteurRecuesk2 = 0 # nombre des requÃªtes 2 recues
+     compteurRecuesk3 = 0 # nombre des requÃªtes 1 recues
 
-     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
-     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
-     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk1 = 0 # nombre des requÃªtes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requÃªtes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requÃªtes 1 perdues
 
      tempsArrivee = 0 # Temps pour la reception suivante
      tempsService = 0 # Temps pour le service suivant
@@ -290,22 +290,22 @@ ListePaquetsPerdus=c()
    }
 
    simu=list();
-   lambda2 = 0.1
-   iterations = 1:1000
-   scope = seq(0.1,10,by=0.1)
+   lambda2 = 1
+   iterations = 1:100
+   scope = seq(1,100,by=1)
    for(i in iterations){
      simu[i] = simulationServeur2(lambda2,1,10,0.5,0.3,0.2,10^4,1)
-     lambda2 = lambda2 + 0.1
+     lambda2 = lambda2 + 1
    }
    plot(scope,simu, main="Pourcentage de perte en fonction de lambda/mu", xlab="lambda/mu", ylab="Pourcentage de paquets perdus")
 
 ```
 
-Le taux de perte est donc élevé puisqu'il monte au délà de 40% pour un ratio lambda/mu de 10.
+Le taux de perte est donc Ã©levÃ© puisqu'il monte au delÃ  de 40% pour un ratio $\lambda/\mu$=10.
 
-Afin de résoudre ce problème on peut soit augmenter la taille du buffer d'attente ou encore ajouter des serveurs. C'est ce que nous allons voir.
+Afin de rÃ©soudre ce problÃ¨me on peut soit augmenter la taille du buffer d'attente ou encore ajouter des serveurs. C'est ce que nous allons voir.
 
-#Effets de l'augmentation du nombre de serveurs
+##Effets de l'augmentation du nombre de serveurs
 
 ```{r echo=FALSE}
 
@@ -329,22 +329,22 @@ ListePaquetsPerdus=c()
      N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
 
      ## Pour les arrivees
-     k1 = 0 # nombre de requetes dans la queue de P1
-     k2 = 0 # nombre de requetes dans la queue de P2
-     k3 = 0 # nombre de requetes dans la queue de P3
-     k = 0 # nombre de requetes totales
+     k1 = 0 # nombre de requÃªtes dans la queue de P1
+     k2 = 0 # nombre de requÃªtes dans la queue de P2
+     k3 = 0 # nombre de requÃªtes dans la queue de P3
+     k = 0 # nombre de requÃªtes totales
 
-     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
-     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
-     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk1 = 0 # nombre des requÃªtes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requÃªtes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requÃªtes 1 traitees successivement
 
-     compteurRecuesk1 = 0 # nombre des requetes 1 recues
-     compteurRecuesk2 = 0 # nombre des requetes 2 recues
-     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+     compteurRecuesk1 = 0 # nombre des requÃªtes 1 recues
+     compteurRecuesk2 = 0 # nombre des requÃªtes 2 recues
+     compteurRecuesk3 = 0 # nombre des requÃªtes 1 recues
 
-     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
-     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
-     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk1 = 0 # nombre des requÃªtes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requÃªtes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requÃªtes 1 perdues
 
      tempsArrivee = 0 # Temps pour la reception suivante
      tempsService = 0 # Temps pour le service suivant
@@ -437,3 +437,5 @@ ListePaquetsPerdus=c()
    plot(scope,simu, main="Pourcentage de perte en fonction du nombre de serveurs", xlab="Nombre de serveurs", ylab="Pourcentage de paquets perdus")
 
 ```
+
+Pour une queue de 10 Ã©lÃ©ments et un ratio de $\lambda/\mu$ de 12, il suffit de 4 serveurs pour arriver Ã  un nombre nul ou quasi nul de paquets perdus.

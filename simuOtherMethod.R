@@ -1,6 +1,4 @@
-  ## Simulation de l'arrivée des requêtes : 
-  
-  ## Simulation des services : 
+## Simul
   
   simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
     ## N : capacité maximale de stockage (en service + dans la file d'attente)
@@ -40,6 +38,10 @@
     paquetsRecus = 0
     paquetsTraites = 0
     paquetsPerdus = 0
+    
+    creditq1 = 4
+    creditq2 = 4
+    creditq3 = 4
     
     while(expTime<totalTime){
       if (tempsArrivee< tempsService || k == 0) {
@@ -92,17 +94,19 @@
           prochainService = rexp(1,mu)
           tempsService = tempsService + prochainService
           for (i in 0:nbServeurs) {
-            if (k1 > 0){
+            if (k1 > 0 && creditq1>0){
               k1 = k1 - 1
               paquetsTraites = paquetsTraites + 1
               compteurTraitesk1 = compteurTraitesk1 +1
+              
             }
-            else if (k2 > 0){
+            else if (k2 > 0 && creditq2>0){
               k2 = k2 - 1
               paquetsTraites = paquetsTraites + 1
               compteurTraitesk2 = compteurTraitesk2+1
+              
             }
-            else if (k3 > 0){
+            else if (k3 > 0 && creditq3>0){
               k3 = k3 - 1
               paquetsTraites = paquetsTraites + 1
               compteurTraitesk3 = compteurTraitesk3 +1
@@ -138,7 +142,7 @@
   }
   
   simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,1)
-  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,2)
-  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,4)
-  simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,8)
+  #simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,2)
+  #simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,4)
+  #simulationServeur2(6,1,20,0.5,0.3,0.2,10^4,8)
   
