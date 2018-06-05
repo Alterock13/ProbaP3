@@ -1,8 +1,10 @@
 ---
-title: "Probabilités Appliquées - Projet simulation de file d'attente"
-output: html_document
+title: "Projet simulation de file d'attente"
 author: "Arnaud PIERRET"
 date: "1 Juin 2018"
+output:
+  html_document: default
+  pdf_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -12,11 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 Ce projet fut réalisé à l'aide du langage R. Le problème présenté est de simuler une file d'attente sur un serveur.
 
 ##Arrivé et traitement des requêtes
-
-Les requêtes arrivent aux temps A1,A2,..,An en suivant la une loi exponentielle de paramètre $lambda. Afin de gérer les niveaux de priorités (similaire à ce que ferai un système de QoS), les requêtes entrantes sont stockées dans une des trois sous-file de priorité avec le choix de la file réalisé grâce à une variable aléatoire suivant une loi uniforme.
+Les requêtes arrivent aux temps $A~1~$,$A~2~$,..,$A~n~$ en suivant la une loi exponentielle de paramètre $lambda. Afin de gérer les niveaux de priorités (similaire à ce que ferai un système de QoS), les requêtes entrantes sont stockées dans une des trois sous-file de priorité avec le choix de la file réalisé grâce à une variable aléatoire suivant une loi uniforme.
 La file d'attente a une taille N qui limite le nombre de requêtes dans le système. Si une requête arrive alors que la file est pleine, cette requête est rejetée.
 
-Les requêtes sont traitées aux temps D1,D2,..,Dn en suivant également une loi exponentielle mais cette fois ci de paramètre $(1/mu). Lorsqu'un temps de traitement arrive, une requête (située dans une des files de priorité) est retirée de la simulation. La gestion des priorités fut réalisée de manière assez naïve comparé à la réalité. En effet, dans notre simulation, tant que des paquets tagués P1 sont en attentes ils sont traités, puis les P2, puis les P3. Dans la vraie vie, des systèmes de traitement de queue tels que le Round Robin and Weighted Fair Queuing (WFQ) sont plus utilisés. Pour autant, dans le contexte de notre simulation, le Priority Queuing (PQ) donne déjà des résultats probants. Pour ce projet, j'ai tenté de mettre en place un WFQ en limitant à 3 traitements successifs pour chaque priorité. La différence avec le PQ était ici négligeable.
+Les requêtes sont traitées aux temps $D~1~$, $D~2~$,..,$D~n~$ en suivant également une loi exponentielle mais cette fois ci de paramètre $(1/mu). Lorsqu'un temps de traitement arrive, une requête (située dans une des files de priorité) est retirée de la simulation. La gestion des priorités fut réalisée de manière assez naïve comparé à la réalité. En effet, dans notre simulation, tant que des paquets tagués P1 sont en attentes ils sont traités, puis les P2, puis les P3. Dans la vraie vie, des systèmes de traitement de queue tels que le Round Robin and Weighted Fair Queuing (WFQ) sont plus utilisés. Pour autant, dans le contexte de notre simulation, le Priority Queuing (PQ) donne déjà des résultats probants. Pour ce projet, j'ai tenté de mettre en place un WFQ en limitant à 3 traitements successifs pour chaque priorité. La différence avec le PQ était ici négligeable.
 
 ##Influence des paramètres lambda et mu
 
@@ -301,11 +302,15 @@ ListePaquetsPerdus=c()
 
 ```
 
-Le taux de perte est donc élevé puisqu'il monte au delà de 40% pour un ratio $\lambda/\mu$=10.
+Le taux de perte est donc élevé puisqu'il monte au delà de 40% pour un ratio $\lambda/\mu$=10. Il est intéressant de noter que ce taux augmente de manière quasi logarithmique
 
 Afin de résoudre ce problème on peut soit augmenter la taille du buffer d'attente ou encore ajouter des serveurs. C'est ce que nous allons voir.
 
 ##Effets de l'augmentation du nombre de serveurs
+
+Pour simuler une augmentation du nombre de serveur, nous avons choisis d'opter pour une boucle au sein de notre partie traitement de requêtes Ainsi, à chaque fois qu'une période de traitement arrive, on ne traite pas 1 mais N requêtes. Par convention, nous avons également choisi de multiplier la taille de la file passé en paramètre par N.
+Une autre méthode qui aurait pu être mis en place aurait été de multiplier le paramètre $\mu$ par N pour diviser le temps avant le prochain traitement.
+Sur le graphe ci-dessous, vous pouvez voir les effets de l'augmentation du nombre de serveurs.
 
 ```{r echo=FALSE}
 
@@ -438,4 +443,4 @@ ListePaquetsPerdus=c()
 
 ```
 
-Pour une queue de 10 éléments et un ratio de $\lambda/\mu$ de 12, il suffit de 4 serveurs pour arriver à un nombre nul ou quasi nul de paquets perdus.
+Pour une queue de 10 éléments et un ratio $\lambda/\mu$=12, il suffit de 4 serveurs pour arriver à un nombre nul ou quasi nul de paquets perdus.

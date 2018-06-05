@@ -1,0 +1,179 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={ProbabilitÃ©s AppliquÃ©es - Projet simulation de file d'attente},
+            pdfauthor={Arnaud PIERRET},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{ProbabilitÃ©s AppliquÃ©es - Projet simulation de file d'attente}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Arnaud PIERRET}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{1 Juin 2018}
+
+
+\begin{document}
+\maketitle
+
+\subsection{Introduction}\label{introduction}
+
+Ce projet fut réalisé à l'aide du langage R. Le problème présenté est de
+simuler une file d'attente sur un serveur.
+
+\subsection{Arrivé et traitement des
+requêtes}\label{arrive-et-traitement-des-requetes}
+
+Les requêtes arrivent aux temps A1,A2,..,An en suivant la une loi
+exponentielle de paramètre \$lambda. Afin de gérer les niveaux de
+priorités (similaire à ce que ferai un système de QoS), les requêtes
+entrantes sont stockées dans une des trois sous-file de priorité avec le
+choix de la file réalisé grâce à une variable aléatoire suivant une loi
+uniforme. La file d'attente a une taille N qui limite le nombre de
+requêtes dans le système. Si une requête arrive alors que la file est
+pleine, cette requête est rejetée.
+
+Les requêtes sont traitées aux temps D1,D2,..,Dn en suivant également
+une loi exponentielle mais cette fois ci de paramètre \$(1/mu).
+Lorsqu'un temps de traitement arrive, une requête (située dans une des
+files de priorité) est retirée de la simulation. La gestion des
+priorités fut réalisée de manière assez naïve comparé à la réalité. En
+effet, dans notre simulation, tant que des paquets tagués P1 sont en
+attentes ils sont traités, puis les P2, puis les P3. Dans la vraie vie,
+des systèmes de traitement de queue tels que le Round Robin and Weighted
+Fair Queuing (WFQ) sont plus utilisés. Pour autant, dans le contexte de
+notre simulation, le Priority Queuing (PQ) donne déjà des résultats
+probants. Pour ce projet, j'ai tenté de mettre en place un WFQ en
+limitant à 3 traitements successifs pour chaque priorité. La différence
+avec le PQ était ici négligeable.
+
+\subsection{Influence des paramètres lambda et
+mu}\label{influence-des-parametres-lambda-et-mu}
+
+Tout d'abord, nous allons effectuer des expériences nous montrant
+notamment les effets des variations de lambda et mu sur le système. Nous
+allons étudier pour le moment 3 cas, lambdamu Pour ce faire, lançons une
+simulation avec un lambda allant de 1 à 10 et étudions la perte des
+paquets. Les autres paramètres pour cette expérience seront : - mu = 1 -
+N = 10 - p1 = 0.5 - p2 = 0.3 - p3 = 0.2 - durée de l'expérience :
+10\^{}4
+
+\includegraphics{Rapport_Arnaud_files/figure-latex/unnamed-chunk-1-1.pdf}
+
+En dessous du rapport \(\lambda/\mu\) le nombre de paquets perdus est
+négligeable, il tend vers 0. Ce qui est logique puisque si le traitement
+se fait plus rapidement que les arrivés et avec une file de 10 éléments,
+il y a peu de risque de perdre des paquets. En revanche, on peut
+observer qu'au delà d'un ratio \(\lambda/\mu\) supérieur à 4, le nombre
+de paquets perdus croit rapidement jusqu'à dépasser 12000 pertes pour un
+ratio de 10
+
+\subsection{Perte de paquets}\label{perte-de-paquets}
+
+Le pourcentage de paquets perdus théorique est donné par cette formule :
+\[P(X_t=N)=\frac{1-\rho}{1-\rho^{N+1}}\rho^N\]
+
+Pour trouver une valeur empirique à cette probabilité nous pouvons
+tracer le pourcentage de paquets perdus sur le total de paquets arrivés
+pour différentes valeurs de \(\lambda\).
+
+\includegraphics{Rapport_Arnaud_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+Le taux de perte est donc élevé puisqu'il monte au delà de 40\% pour un
+ratio \(\lambda/\mu\)=10.
+
+Afin de résoudre ce problème on peut soit augmenter la taille du buffer
+d'attente ou encore ajouter des serveurs. C'est ce que nous allons voir.
+
+\subsection{Effets de l'augmentation du nombre de
+serveurs}\label{effets-de-laugmentation-du-nombre-de-serveurs}
+
+Pour simuler une augmentation du nombre de serveur, nous avons choisis
+d'opter pour une boucle au sein de notre partie traitement de requêtes
+Ainsi, à chaque fois qu'une période de traitement arrive, on ne traite
+pas 1 mais N requêtes. Par convention, nous avons également choisi de
+multiplier la taille de la file passé en paramètre par N. Une autre
+méthode qui aurait pu être mis en place aurait été de multiplier le
+paramètre \(\mu\) par N pour diviser le temps avant le prochain
+traitement. Sur le graphe ci-dessous, vous pouvez voir les effets de
+l'augmentation du nombre de serveurs.
+
+\includegraphics{Rapport_Arnaud_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+Pour une queue de 10 éléments et un ratio de \(\lambda/\mu\) de 12, il
+suffit de 4 serveurs pour arriver à un nombre nul ou quasi nul de
+paquets perdus.
+
+
+\end{document}
