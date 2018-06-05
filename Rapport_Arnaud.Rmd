@@ -8,302 +8,432 @@ date: "26 Mai 2018"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# ```{r echo=FALSE}
-# 
-#   ## Simulation de l'arrivÃ©e des requÃªtes : 
-#   
-#   ## Simulation des services : 
-# 
-# 
-#   simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
-#     ## N : capacitÃ© maximale de stockage (en service + dans la file d'attente)
-#     ## p1,p2,p3 : proportion de prioritÃ©s (p1+p2+p3 = 1)
-#     ## lambda : intensitÃ©, lambda>0
-#     ## 1/mu : temps de traitement, mu>0
-#     ## nbServeurs : nombre de serveurs
-#     
-#     ## Duree de l'experience
-#     totalTime = duration   # duration of simulation
-#     expTime = 0 # simulation time
-#     
-#     N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
-#     
-#     ## Pour les arrivees
-#     k1 = 0 # nombre de requetes dans la queue de P1
-#     k2 = 0 # nombre de requetes dans la queue de P2
-#     k3 = 0 # nombre de requetes dans la queue de P3
-#     k = 0 # nombre de requetes totales 
-#     
-#     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
-#     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
-#     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
-#     
-#     compteurRecuesk1 = 0 # nombre des requetes 1 recues
-#     compteurRecuesk2 = 0 # nombre des requetes 2 recues
-#     compteurRecuesk3 = 0 # nombre des requetes 1 recues
-#     
-#     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
-#     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
-#     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
-#     
-#     tempsArrivee = 0 # Temps pour la reception suivante
-#     tempsService = 0 # Temps pour le service suivant
-#     
-#     paquetsRecus = 0
-#     paquetsTraites = 0
-#     paquetsPerdus = 0
-#     
-#     while(expTime<totalTime){
-#       if (tempsArrivee< tempsService || k == 0) {
-#         paquetsRecus = paquetsRecus + 1
-#         ## On associe a la requete une priorite
-#         randomPriority = sample(1:100,1)
-#         
-#         if(randomPriority < p1*100){
-#           prochaineRequete = rexp(1,p1* lambda)
-#           if(k==N){
-#             paquetsPerdus = paquetsPerdus + 1
-#             compteurPerduesk1 = compteurPerduesk1+1
-#           }
-#           else{
-#             compteurRecuesk1 = compteurRecuesk1 + 1
-#             k1 = k1 +1  
-#           }
-#         }
-#         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
-#           prochaineRequete = rexp(1,p2* lambda)
-#           if(k==N){
-#             paquetsPerdus = paquetsPerdus + 1
-#             compteurPerduesk2 = compteurPerduesk2+1
-#           }
-#           else{
-#             compteurRecuesk2 = compteurRecuesk2 + 1
-#             k2 = k2 + 1
-#           }
-#         }
-#         else{
-#           prochaineRequete = rexp(1,p3* lambda)
-#           if(k==N){
-#             paquetsPerdus = paquetsPerdus + 1
-#             compteurPerduesk3 = compteurPerduesk3 + 1
-#           }
-#           else{
-#             compteurRecuesk3 = compteurRecuesk3 + 1
-#             k3 = k3 + 1
-#           }
-#         }
-#         tempsArrivee = tempsArrivee + prochaineRequete
-#         k = k1+k2+k3
-#         expTime = tempsArrivee
-#         
-#       
-#       }else
-#         {
-#           prochainService = rexp(1,mu)
-#           tempsService = tempsService + prochainService
-#           for (i in 0:nbServeurs) {
-#             if (k1 > 0){
-#               k1 = k1 - 1
-#               paquetsTraites = paquetsTraites + 1
-#               compteurTraitesk1 = compteurTraitesk1 +1
-#             }
-#             else if (k2 > 0){
-#               k2 = k2 - 1
-#               paquetsTraites = paquetsTraites + 1
-#               compteurTraitesk2 = compteurTraitesk2+1
-#             }
-#             else if (k3 > 0){
-#               k3 = k3 - 1
-#               paquetsTraites = paquetsTraites + 1
-#               compteurTraitesk3 = compteurTraitesk3 +1
-#             }
-#             
-#             k = k1+k2+k3
-#           }
-#           expTime = tempsService
-#       }
-#     }
-#     return(paquetsPerdus)
-#   }
-#   simu=list();
-#   lambda2 = 0.1
-#   iterations = 1:100
-#   scope = seq(0.1,10,by=0.1)
-#   for(i in iterations){
-#     simu[i] = simulationServeur2(lambda2,1,10,0.5,0.3,0.2,10^4,1)
-#     lambda2 = lambda2 + 0.1
-#   }
-#   plot(scope,ListePaquetsPerdus)
-#   
-# ####
-#   
-#   simu=list();
-#   lambda2 = 0.1
-#   iterations = 1:100
-#   scope = seq(0.1,10,by=0.1)
-#   for(i in iterations){
-#     simu[i] = simulationServeur2(2,1,10,0.5,0.3,0.2,10^4,1)
-#     lambda2 = lambda2 + 0.1
-#   }
-#   plot(scope,ListePaquetsPerdus)
-#   
-# 
-# 
-# ```
+#Introduction
 
-<!-- ## Projet Proba $(\lambda<\mu)$ -->
-<!-- Le problème présenté est de simuler une file d'attente sur un serveur. Pour ce faire nous disposons d'un paramètre dictant l'intensité de réception des reqûetes et d'un autre paramètre 1/u qui est lié au temps de traitement de ces requêtes. Une fois modélisé, on peut donc effectuer des expériences nous montrant notamment les effets des variations de lambda et mu sur le système. Nous allons étudier pour le moment 3 cas, lambda<mu, lambda=mu et lambda>mu -->
+Ce projet fut réalisé à l'aide du language R. Le problème présenté est de simuler une file d'attente sur un serveur.
 
-<!-- plot() -->
+# Arrivée et traitement des requêtes
 
-<!-- Le problème présenté est de simuler la probabilité d'avoir au moins deux personnes dans un groupe de n individus ayant leur anniversaire à la même date. Le script R utilisé effectue un certain nombre d'itérations (ci-dessous 15000) où une liste est créée pour chaque n contenant des dates d'anniversaire choisies de manière aléatoire. -->
-<!-- ```{r plot1, echo = FALSE} -->
+Les requêtes arrivent aux temps A1,A2,..,An en suivant la une loi exponentielle de paramètre $lambda. Afin de gérer les niveaux de priorités (similaire à de la QoS), les requetes entrantes sont stockées dans une des trois sous-file de priorité avec le choix de la file réalisé grâce à une variable aléatoire suivant une loi????TODO
+La file d'attente a une taille N qui limite le nombre de requêtes dans le système. Si une requête arrive alors que la file est pleine, la requête est rejetée.
 
-<!-- proba = list(); -->
-<!-- people = 1:100; -->
-<!-- iterations = 15000 -->
+Les requêtes sont traitées aux temps D1,D2,..,Dn en suivant égaleent une loi exponentielle mais cette fois ci de paramètre $(1/mu). Lorsqu'un tempsde traitement arrive, une requête (située dans une des files de priorité) est retirée de la simulation. La gestion des priorités fut réalisée de manière assez simpliste comparé à la réalité. En effet, dans notre simuation, tant que des paquets tagués P1 sont en attentes ils sont traités, puis les P2, puis les P3. Dans la vraie vie, des système de QoS tels que le Round Robin and Weighted Fair Queuing sont plus utilisés. Pour autant, dans le contexte de notre simulation, le Priority Queuing donne déjà des résultats probants.
 
-<!-- for (p in people){ -->
-<!--   proba[p] = genBirthday(p,iterations) -->
-<!-- } -->
-<!-- plot(people,proba, main="Figure 1", xlab="Nombre de personnes", ylab = "Probabilité", las=1); -->
-<!-- ``` -->
+# Influence des paramètres lambda et mu
 
-<!-- ### Question 2 -->
+Tout d'abord, nous allons effectuer des expériences nous montrant notamment les effets des variations de lambda et mu sur le système. Nous allons étudier pour le moment 3 cas, lambda<mu, lambda=mu et lambda>mu
+pour ce faire, lançon une simulation avec un lambda allant de 1 à 10 et étudions la perte des paquets. Les autres paramètres pour cette expérience seront :
+* mu = 1
+* N = 10
+* p1 = 0.5
+* p2 = 0.3
+* p3 = 0.2
+* durée de l'expérience : 10^4
+
 ```{r echo=FALSE}
 
-  ## Simulation de l'arrivÃ©e des requÃªtes : 
-  
-  ## Simulation des services : 
+   ## Simulation de l'arrivÃ©e des requÃªtes :
+
+   ## Simulation des services :
+
+ListePaquetsPerdus=c()
+
+   simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
+     ## N : capacitÃ© maximale de stockage (en service + dans la file d'attente)
+     ## p1,p2,p3 : proportion de prioritÃ©s (p1+p2+p3 = 1)
+     ## lambda : intensitÃ©, lambda>0
+   ## 1/mu : temps de traitement, mu>0
+     ## nbServeurs : nombre de serveurs
+
+     ## Duree de l'experience
+     totalTime = duration   # duration of simulation
+     expTime = 0 # simulation time
+
+     N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
+
+     ## Pour les arrivees
+     k1 = 0 # nombre de requetes dans la queue de P1
+     k2 = 0 # nombre de requetes dans la queue de P2
+     k3 = 0 # nombre de requetes dans la queue de P3
+     k = 0 # nombre de requetes totales
+
+     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+
+     compteurRecuesk1 = 0 # nombre des requetes 1 recues
+     compteurRecuesk2 = 0 # nombre des requetes 2 recues
+     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+
+     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+
+     tempsArrivee = 0 # Temps pour la reception suivante
+     tempsService = 0 # Temps pour le service suivant
+
+     paquetsRecus = 0
+     paquetsTraites = 0
+     paquetsPerdus = 0
+
+     while(expTime<totalTime){
+       if (tempsArrivee< tempsService || k == 0) {
+         paquetsRecus = paquetsRecus + 1
+         ## On associe a la requete une priorite
+         randomPriority = sample(1:100,1)
+
+         if(randomPriority < p1*100){
+           prochaineRequete = rexp(1,p1* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk1 = compteurPerduesk1+1
+           }
+           else{
+             compteurRecuesk1 = compteurRecuesk1 + 1
+             k1 = k1 +1
+           }
+         }
+         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
+           prochaineRequete = rexp(1,p2* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk2 = compteurPerduesk2+1
+           }
+           else{
+             compteurRecuesk2 = compteurRecuesk2 + 1
+             k2 = k2 + 1
+           }
+         }
+         else{
+           prochaineRequete = rexp(1,p3* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk3 = compteurPerduesk3 + 1
+           }
+           else{
+             compteurRecuesk3 = compteurRecuesk3 + 1
+             k3 = k3 + 1
+           }
+         }
+         tempsArrivee = tempsArrivee + prochaineRequete
+         k = k1+k2+k3
+         expTime = tempsArrivee
 
 
-  simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
-    ## N : capacitÃ© maximale de stockage (en service + dans la file d'attente)
-    ## p1,p2,p3 : proportion de prioritÃ©s (p1+p2+p3 = 1)
-    ## lambda : intensitÃ©, lambda>0
-    ## 1/mu : temps de traitement, mu>0
-    ## nbServeurs : nombre de serveurs
-    
-    ## Duree de l'experience
-    totalTime = duration   # duration of simulation
-    expTime = 0 # simulation time
-    
-    N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
-    
-    ## Pour les arrivees
-    k1 = 0 # nombre de requetes dans la queue de P1
-    k2 = 0 # nombre de requetes dans la queue de P2
-    k3 = 0 # nombre de requetes dans la queue de P3
-    k = 0 # nombre de requetes totales 
-    
-    compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
-    compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
-    compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
-    
-    compteurRecuesk1 = 0 # nombre des requetes 1 recues
-    compteurRecuesk2 = 0 # nombre des requetes 2 recues
-    compteurRecuesk3 = 0 # nombre des requetes 1 recues
-    
-    compteurPerduesk1 = 0 # nombre des requetes 1 perdues
-    compteurPerduesk2 = 0 # nombre des requetes 2 perdues
-    compteurPerduesk3 = 0 # nombre des requetes 1 perdues
-    
-    tempsArrivee = 0 # Temps pour la reception suivante
-    tempsService = 0 # Temps pour le service suivant
-    
-    paquetsRecus = 0
-    paquetsTraites = 0
-    paquetsPerdus = 0
-    
-    listek3traite = c()
-    listek2traite = c()
-    listek1traite = c()
-    
-    while(expTime<totalTime){
-      if (tempsArrivee< tempsService || k == 0) {
-        paquetsRecus = paquetsRecus + 1
-        ## On associe a la requete une priorite
-        randomPriority = sample(1:100,1)
-        
-        if(randomPriority < p1*100){
-          prochaineRequete = rexp(1,p1* lambda)
-          if(k==N){
-            paquetsPerdus = paquetsPerdus + 1
-            compteurPerduesk1 = compteurPerduesk1+1
-          }
-          else{
-            compteurRecuesk1 = compteurRecuesk1 + 1
-            k1 = k1 +1  
-          }
-        }
-        else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
-          prochaineRequete = rexp(1,p2* lambda)
-          if(k==N){
-            paquetsPerdus = paquetsPerdus + 1
-            compteurPerduesk2 = compteurPerduesk2+1
-          }
-          else{
-            compteurRecuesk2 = compteurRecuesk2 + 1
-            k2 = k2 + 1
-          }
-        }
-        else{
-          prochaineRequete = rexp(1,p3* lambda)
-          if(k==N){
-            paquetsPerdus = paquetsPerdus + 1
-            compteurPerduesk3 = compteurPerduesk3 + 1
-          }
-          else{
-            compteurRecuesk3 = compteurRecuesk3 + 1
-            k3 = k3 + 1
-          }
-        }
-        tempsArrivee = tempsArrivee + prochaineRequete
-        k = k1+k2+k3
-        expTime = tempsArrivee
-        
-      
-      }else
-        {
-          prochainService = rexp(1,mu)
-          tempsService = tempsService + prochainService
-          for (i in 0:nbServeurs) {
-            if (k1 > 0){
-              k1 = k1 - 1
-              paquetsTraites = paquetsTraites + 1
-              compteurTraitesk1 = compteurTraitesk1 +1
-              listek1traite=c(listek1traite,compteurTraitesk1)
+       }else
+         {
+           prochainService = rexp(1,mu)
+           tempsService = tempsService + prochainService
+           for (i in 0:nbServeurs) {
+             if (k1 > 0){
+               k1 = k1 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk1 = compteurTraitesk1 +1
+             }
+             else if (k2 > 0){
+               k2 = k2 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk2 = compteurTraitesk2+1
+             }
+             else if (k3 > 0){
+               k3 = k3 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk3 = compteurTraitesk3 +1
+             }
 
-            }
-            else if (k2 > 0){
-              k2 = k2 - 1
-              paquetsTraites = paquetsTraites + 1
-              compteurTraitesk2 = compteurTraitesk2+1
-            listek2traite=c(listek2traite,compteurTraitesk2)
+             k = k1+k2+k3
+           }
+           expTime = tempsService
+       }
+     }
+     return(paquetsPerdus)
+   }
 
-            }
-            else if (k3 > 0){
-              k3 = k3 - 1
-              paquetsTraites = paquetsTraites + 1
-              compteurTraitesk3 = compteurTraitesk3 +1
-            listek3traite=c(listek3traite,compteurTraitesk3)
-            }
-            
-            k = k1+k2+k3
-          }
-          expTime = tempsService
-        }
-    }
-    compteurPerduesTotal = compteurPerduesk1 + compteurPerduesk2 + compteurPerduesk3
-    return(c(compteurTraitesk1/compteurRecuesk1*100,compteurTraitesk2/compteurRecuesk2*100,compteurTraitesk3/compteurRecuesk3*100,compteurPerduesk1/compteurRecuesk1*100,compteurPerduesk2/compteurRecuesk2*100,compteurPerduesk3/compteurRecuesk3*100))
-  }
-bartraite = simulationServeur2(6,1,10,0.5,0.3,0.2,10^4,1)
-#barperdu = simulationServeur2(6,1,10,0.5,0.3,0.2,10^4,1)[4:6]
-barplot(bartraite)
+   simu=list();
+   lambda2 = 0.1
+   iterations = 1:100
+   scope = seq(0.1,10,by=0.1)
+   for(i in iterations){
+     simu[i] = simulationServeur2(lambda2,1,10,0.5,0.3,0.2,10^4,1)
+     lambda2 = lambda2 + 0.1
+   }
+   plot(scope,simu, main="Perte des paquets en fonction de lambda/mu", xlab="lambda/mu", ylab="Nombre de paquets perdus")
 
+
+   
+```
+En dessous du rapport $$lambda/mu$$ le nombre de paquets perdus est négligeable, il tend vers 0. Ce qui est logique puisque si le traitement se fait plsu rapidement que les arrivés et avec une file de 10 éléments, il y a peu de risque de predre des paquets. En revanche, on peut observer qu'au delà d'un ratio $(lambda/mu) supérieur à 4, le nombre de paquêts perdus croît rapidement jusqu'à dépasser 12000 pour un ratio de 10
+
+# Perte de paquets
+
+Le pourcentage de paquets perdus théorique est donné par cette forumule : $$P(X_t=N)=\frac{1-\rho}{1-\rho^{N+1}}\rho^N$$
+
+Pour trouver une valeur empirique à cette probabilité nous pouvons tracer le pourcentage de paquets perdus sur le total de paquets arrivés pour différentes valeurs de lambda.
+
+```{r echo=FALSE}
+
+   ## Simulation de l'arrivÃ©e des requÃªtes :
+
+   ## Simulation des services :
+
+ListePaquetsPerdus=c()
+
+   simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
+     ## N : capacitÃ© maximale de stockage (en service + dans la file d'attente)
+     ## p1,p2,p3 : proportion de prioritÃ©s (p1+p2+p3 = 1)
+     ## lambda : intensitÃ©, lambda>0
+   ## 1/mu : temps de traitement, mu>0
+     ## nbServeurs : nombre de serveurs
+
+     ## Duree de l'experience
+     totalTime = duration   # duration of simulation
+     expTime = 0 # simulation time
+
+     N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
+
+     ## Pour les arrivees
+     k1 = 0 # nombre de requetes dans la queue de P1
+     k2 = 0 # nombre de requetes dans la queue de P2
+     k3 = 0 # nombre de requetes dans la queue de P3
+     k = 0 # nombre de requetes totales
+
+     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+
+     compteurRecuesk1 = 0 # nombre des requetes 1 recues
+     compteurRecuesk2 = 0 # nombre des requetes 2 recues
+     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+
+     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+
+     tempsArrivee = 0 # Temps pour la reception suivante
+     tempsService = 0 # Temps pour le service suivant
+
+     paquetsRecus = 0
+     paquetsTraites = 0
+     paquetsPerdus = 0
+
+     while(expTime<totalTime){
+       if (tempsArrivee< tempsService || k == 0) {
+         paquetsRecus = paquetsRecus + 1
+         ## On associe a la requete une priorite
+         randomPriority = sample(1:100,1)
+
+         if(randomPriority < p1*100){
+           prochaineRequete = rexp(1,p1* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk1 = compteurPerduesk1+1
+           }
+           else{
+             compteurRecuesk1 = compteurRecuesk1 + 1
+             k1 = k1 +1
+           }
+         }
+         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
+           prochaineRequete = rexp(1,p2* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk2 = compteurPerduesk2+1
+           }
+           else{
+             compteurRecuesk2 = compteurRecuesk2 + 1
+             k2 = k2 + 1
+           }
+         }
+         else{
+           prochaineRequete = rexp(1,p3* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk3 = compteurPerduesk3 + 1
+           }
+           else{
+             compteurRecuesk3 = compteurRecuesk3 + 1
+             k3 = k3 + 1
+           }
+         }
+         tempsArrivee = tempsArrivee + prochaineRequete
+         k = k1+k2+k3
+         expTime = tempsArrivee
+
+
+       }else
+         {
+           prochainService = rexp(1,mu)
+           tempsService = tempsService + prochainService
+           for (i in 0:nbServeurs) {
+             if (k1 > 0){
+               k1 = k1 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk1 = compteurTraitesk1 +1
+             }
+             else if (k2 > 0){
+               k2 = k2 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk2 = compteurTraitesk2+1
+             }
+             else if (k3 > 0){
+               k3 = k3 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk3 = compteurTraitesk3 +1
+             }
+
+             k = k1+k2+k3
+           }
+           expTime = tempsService
+       }
+     }
+     return((paquetsPerdus/paquetsRecus)*100)
+   }
+
+   simu=list();
+   lambda2 = 0.1
+   iterations = 1:1000
+   scope = seq(0.1,10,by=0.1)
+   for(i in iterations){
+     simu[i] = simulationServeur2(lambda2,1,10,0.5,0.3,0.2,10^4,1)
+     lambda2 = lambda2 + 0.1
+   }
+   plot(scope,simu, main="Pourcentage de perte en fonction de lambda/mu", xlab="lambda/mu", ylab="Pourcentage de paquets perdus")
 
 ```
 
+Le taux de perte est donc élevé puisqu'il monte au délà de 40% pour un ratio lambda/mu de 10.
+
+Afin de résoudre ce problème on peut soit augmenter la taille du buffer d'attente ou encore ajouter des serveurs. C'est ce que nous allons voir.
+
+#Effets de l'augmentation du nombre de serveurs
+
 ```{r echo=FALSE}
+
+   ## Simulation de l'arrivÃ©e des requÃªtes :
+
+   ## Simulation des services :
+
+ListePaquetsPerdus=c()
+
+   simulationServeur2 = function(lambda,mu,N,p1,p2,p3,duration,nbServeurs){
+     ## N : capacitÃ© maximale de stockage (en service + dans la file d'attente)
+     ## p1,p2,p3 : proportion de prioritÃ©s (p1+p2+p3 = 1)
+     ## lambda : intensitÃ©, lambda>0
+   ## 1/mu : temps de traitement, mu>0
+     ## nbServeurs : nombre de serveurs
+
+     ## Duree de l'experience
+     totalTime = duration   # duration of simulation
+     expTime = 0 # simulation time
+
+     N = N * nbServeurs # on augmente la taille de la file globale en fonction du nombre de serveurs dispos
+
+     ## Pour les arrivees
+     k1 = 0 # nombre de requetes dans la queue de P1
+     k2 = 0 # nombre de requetes dans la queue de P2
+     k3 = 0 # nombre de requetes dans la queue de P3
+     k = 0 # nombre de requetes totales
+
+     compteurTraitesk1 = 0 # nombre des requetes 1 traitees successivement
+     compteurTraitesk2 = 0 # nombre des requetes 2 traites successivement
+     compteurTraitesk3 = 0 # nombre des requetes 1 traitees successivement
+
+     compteurRecuesk1 = 0 # nombre des requetes 1 recues
+     compteurRecuesk2 = 0 # nombre des requetes 2 recues
+     compteurRecuesk3 = 0 # nombre des requetes 1 recues
+
+     compteurPerduesk1 = 0 # nombre des requetes 1 perdues
+     compteurPerduesk2 = 0 # nombre des requetes 2 perdues
+     compteurPerduesk3 = 0 # nombre des requetes 1 perdues
+
+     tempsArrivee = 0 # Temps pour la reception suivante
+     tempsService = 0 # Temps pour le service suivant
+
+     paquetsRecus = 0
+     paquetsTraites = 0
+     paquetsPerdus = 0
+
+     while(expTime<totalTime){
+       if (tempsArrivee< tempsService || k == 0) {
+         paquetsRecus = paquetsRecus + 1
+         ## On associe a la requete une priorite
+         randomPriority = sample(1:100,1)
+
+         if(randomPriority < p1*100){
+           prochaineRequete = rexp(1,p1* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk1 = compteurPerduesk1+1
+           }
+           else{
+             compteurRecuesk1 = compteurRecuesk1 + 1
+             k1 = k1 +1
+           }
+         }
+         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
+           prochaineRequete = rexp(1,p2* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk2 = compteurPerduesk2+1
+           }
+           else{
+             compteurRecuesk2 = compteurRecuesk2 + 1
+             k2 = k2 + 1
+           }
+         }
+         else{
+           prochaineRequete = rexp(1,p3* lambda)
+           if(k==N){
+             paquetsPerdus = paquetsPerdus + 1
+             compteurPerduesk3 = compteurPerduesk3 + 1
+           }
+           else{
+             compteurRecuesk3 = compteurRecuesk3 + 1
+             k3 = k3 + 1
+           }
+         }
+         tempsArrivee = tempsArrivee + prochaineRequete
+         k = k1+k2+k3
+         expTime = tempsArrivee
+
+
+       }else
+         {
+           prochainService = rexp(1,mu)
+           tempsService = tempsService + prochainService
+           for (i in 0:nbServeurs) {
+             if (k1 > 0){
+               k1 = k1 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk1 = compteurTraitesk1 +1
+             }
+             else if (k2 > 0){
+               k2 = k2 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk2 = compteurTraitesk2+1
+             }
+             else if (k3 > 0){
+               k3 = k3 - 1
+               paquetsTraites = paquetsTraites + 1
+               compteurTraitesk3 = compteurTraitesk3 +1
+             }
+
+             k = k1+k2+k3
+           }
+           expTime = tempsService
+       }
+     }
+     return((paquetsPerdus/paquetsRecus)*100)
+   }
+
+   simu=list();
+   serveurs = 1
+   iterations = 1:10
+   scope = seq(0.1,10,by=1)
+   for(i in iterations){
+     simu[i] = simulationServeur2(12,1,10,0.5,0.3,0.2,10^4,serveurs)
+     serveurs = serveurs + 1
+   }
+   plot(scope,simu, main="Pourcentage de perte en fonction du nombre de serveurs", xlab="Nombre de serveurs", ylab="Pourcentage de paquets perdus")
 
 ```

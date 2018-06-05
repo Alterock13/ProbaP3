@@ -48,7 +48,7 @@
         randomPriority = sample(1:100,1)
         
         if(randomPriority < p1*100){
-          prochaineRequete = rexp(1,p1* lambda)
+          prochaineRequete = rexp(1,lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
             compteurPerduesk1 = compteurPerduesk1+1
@@ -59,7 +59,7 @@
           compteurRecuesk1 = compteurRecuesk1 + 1
         }
         else if( p1*100 <= randomPriority && randomPriority < (p1*100 + p2*100)){
-          prochaineRequete = rexp(1,p2* lambda)
+          prochaineRequete = rexp(1,lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
             compteurPerduesk2 = compteurPerduesk2+1
@@ -71,7 +71,7 @@
           compteurRecuesk2 = compteurRecuesk2 + 1
         }
         else{
-          prochaineRequete = rexp(1,p3* lambda)
+          prochaineRequete = rexp(1,lambda)
           if(k==N){
             paquetsPerdus = paquetsPerdus + 1
             compteurPerduesk3 = compteurPerduesk3 + 1
